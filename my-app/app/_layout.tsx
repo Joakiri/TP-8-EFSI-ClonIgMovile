@@ -14,7 +14,7 @@ export default function RootLayout() {
   return (
     <PostsProvider>
       <StatusBar style="dark" backgroundColor="#fff" />
-      <Stack>
+      <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen
           name="(tabs)"
           options={{ headerShown: false }}
@@ -22,6 +22,7 @@ export default function RootLayout() {
         <Stack.Screen
           name="post/[id]"
           options={{
+            headerShown: true,
             title: 'Publicación',
             headerBackTitle: 'Volver',
             headerStyle: { backgroundColor: '#fff' },
