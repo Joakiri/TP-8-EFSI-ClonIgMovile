@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native'
+import {
+  View, Text, Image, TouchableOpacity, StyleSheet, Dimensions
+} from 'react-native'
 import type { Post } from '../types'
 
 interface Props {
@@ -7,7 +9,7 @@ interface Props {
   onSelect: (post: Post) => void
 }
 
-const CARD_WIDTH = (Dimensions.get('window').width - 48) / 2  // 2 columnas con margen
+const IMAGE_WIDTH = Dimensions.get('window').width
 
 const PostCard = ({ post, onSelect }: Props) => {
   const [liked, setLiked] = useState(false)
@@ -19,78 +21,151 @@ const PostCard = ({ post, onSelect }: Props) => {
   }
 
   return (
-    <TouchableOpacity style={styles.card} onPress={() => onSelect(post)} activeOpacity={0.9}>
-      <Image source={{ uri: post.url }} style={styles.image} />
+    <View style={styles.card}>
 
-      {/* Info del usuario arriba */}
-      <View style={styles.userRow}>
+      {/* Header: avatar + usuario + localización */}
+      <View style={styles.header}>
         <Image
-          source={{ uri: post.avatar.replace('/svg?', '/png?') }}
+          source={{ uri: post.avatar }}
           style={styles.avatar}
         />
-        <Text style={styles.username} numberOfLines={1}>{post.username}</Text>
+        <View style={styles.userInfo}>
+          <Text style={styles.username}>{post.username}</Text>
+          <Text style={styles.location}>📍 {post.location}</Text>
+        </View>
+        <TouchableOpacity style={styles.moreBtn}>
+          <Text style={styles.moreText}>•••</Text>
+        </TouchableOpacity>
       </View>
 
-      {/* Acciones abajo */}
+      {/* Imagen */}
+      <TouchableOpacity onPress={() => onSelect(post)} activeOpacity={0.95}>
+        <Image
+          source={{ uri: post.url }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+      </TouchableOpacity>
+
+      {/* Barra de acciones */}
       <View style={styles.actions}>
-        <TouchableOpacity onPress={handleLike} style={styles.actionBtn}>
-          <Text style={styles.actionText}>{liked ? '❤️' : '🤍'} {likeCount.toLocaleString()}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.actionBtn}>
-          <Text style={styles.actionText}>💬</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.actionBtn}>
-          <Text style={styles.actionText}>📤</Text>
+        <View style={styles.actionsLeft}>
+          <TouchableOpacity onPress={handleLike} style={styles.actionBtn}>
+            <Text style={styles.actionIcon}>{liked ? '❤️' : '🤍'}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => onSelect(post)}
+            style={styles.actionBtn}
+          >
+            <Text style={styles.actionIcon}>💬</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.actionBtn}>
+            <Text style={styles.actionIcon}>📤</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity>
+          <Text style={styles.actionIcon}>🔖</Text>
         </TouchableOpacity>
       </View>
-    </TouchableOpacity>
+
+      {/* Contador de likes */}
+      <Text style={styles.likeCount}>{likeCount.toLocaleString()} Me gusta</Text>
+
+      {/* Caption */}
+      <View style={styles.captionRow}>
+        <Text style={styles.captionUsername}>{post.username} </Text>
+        <Text style={styles.captionText}>{post.caption}</Text>
+      </View>
+
+      {/* Timestamp */}
+      <Text style={styles.timestamp}>{post.timestamp}</Text>
+
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   card: {
-    width: CARD_WIDTH,
     backgroundColor: '#fff',
-    borderRadius: 12,
-    overflow: 'hidden',
-    margin: 6,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
+    marginBottom: 12,
   },
-  image: {
-    width: '100%',
-    height: CARD_WIDTH,     // cuadrada
-    backgroundColor: '#f0f0f0',
-  },
-  userRow: {
+
+  // Header
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 8,
-    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
   },
   avatar: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     backgroundColor: '#eee',
+    marginRight: 10,
   },
-  username: {
-    fontSize: 12,
-    fontWeight: '600',
+  userInfo: { flex: 1 },
+  username: { fontSize: 13, fontWeight: '700', color: '#111' },
+  location: { fontSize: 11, color: '#888', marginTop: 1 },
+  moreBtn: { padding: 4 },
+  moreText: { fontSize: 16, color: '#555', letterSpacing: 1 },
+
+  // Imagen
+  image: {
+    width: IMAGE_WIDTH,
+    height: IMAGE_WIDTH,
+    backgroundColor: '#f0f0f0',
+  },
+
+  // Acciones
+  actions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  actionsLeft: {
+    flexDirection: 'row',
+    gap: 14,
+  },
+  actionBtn: { padding: 2 },
+  actionIcon: { fontSize: 24 },
+
+  // Likes
+  likeCount: {
+    paddingHorizontal: 12,
+    fontWeight: '700',
+    fontSize: 13,
+    color: '#111',
+    marginBottom: 4,
+  },
+
+  // Caption
+  captionRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: 12,
+    marginBottom: 4,
+  },
+  captionUsername: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#111',
+  },
+  captionText: {
+    fontSize: 13,
     color: '#333',
     flex: 1,
   },
-  actions: {
-    flexDirection: 'row',
-    paddingHorizontal: 8,
-    paddingBottom: 8,
-    gap: 8,
+
+  // Timestamp
+  timestamp: {
+    paddingHorizontal: 12,
+    fontSize: 11,
+    color: '#aaa',
+    marginBottom: 10,
   },
-  actionBtn: { padding: 2 },
-  actionText: { fontSize: 12, color: '#555' },
 })
 
 export default PostCard

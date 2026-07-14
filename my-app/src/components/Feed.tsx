@@ -11,8 +11,8 @@ interface Props {
 const Feed = ({ posts, loading, onSelect }: Props) => {
   if (loading) {
     return (
-      <View style={styles.skeletonGrid}>
-        {Array.from({ length: 6 }).map((_, i) => (
+      <View style={styles.skeletonList}>
+        {Array.from({ length: 3 }).map((_, i) => (
           <View key={i} style={styles.skeleton} />
         ))}
       </View>
@@ -23,13 +23,12 @@ const Feed = ({ posts, loading, onSelect }: Props) => {
     <FlatList
       data={posts}
       keyExtractor={(item) => item.id}
-      numColumns={2}
-      columnWrapperStyle={styles.row}
-      contentContainerStyle={styles.list}
-      ListHeaderComponent={<Text style={styles.title}>TRENDING</Text>}
       renderItem={({ item }) => (
         <PostCard post={item} onSelect={onSelect} />
       )}
+      ItemSeparatorComponent={() => <View style={styles.separator} />}
+      ListHeaderComponent={<Text style={styles.title}>TRENDING</Text>}
+      contentContainerStyle={styles.list}
       showsVerticalScrollIndicator={false}
     />
   )
@@ -37,31 +36,28 @@ const Feed = ({ posts, loading, onSelect }: Props) => {
 
 const styles = StyleSheet.create({
   list: {
-    padding: 10,
     paddingBottom: 40,
-  },
-  row: {
-    justifyContent: 'space-between',
   },
   title: {
     fontSize: 11,
     fontWeight: '700',
     color: '#999',
     letterSpacing: 1,
-    marginBottom: 10,
-    paddingHorizontal: 4,
+    padding: 16,
   },
-  skeletonGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    padding: 10,
-    gap: 10,
+  separator: {
+    height: 1,
+    backgroundColor: '#f0f0f0',
+  },
+  skeletonList: {
+    padding: 16,
+    gap: 16,
   },
   skeleton: {
-    width: '47%',
-    aspectRatio: 1,
+    width: '100%',
+    height: 400,
     backgroundColor: '#e0e0e0',
-    borderRadius: 12,
+    borderRadius: 4,
   },
 })
 

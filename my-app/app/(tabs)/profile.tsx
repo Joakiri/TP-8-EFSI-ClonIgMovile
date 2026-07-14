@@ -1,27 +1,26 @@
-import { View, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { useRouter } from 'expo-router'
 import { usePosts } from '../../src/context/PostsContext'
 import Profile from '../../src/components/Profile'
-import PostModal from '../../src/components/PostModal'
 import { currentUser } from '../../src/data/user'
+import type { Post } from '../../src/types'
 
 export default function ProfileScreen() {
-  const { posts, selectedPost, setSelectedPost } = usePosts()
+  const { posts } = usePosts()
+  const router = useRouter()
+
+  const handleSelect = (post: Post) => {
+    router.push(`/post/${post.id}`)
+  }
 
   return (
-    <View style={styles.container}>
-      <Profile
-        user={currentUser}
-        posts={posts}
-        onSelect={setSelectedPost}
-      />
-      <PostModal post={selectedPost} onClose={() => setSelectedPost(null)} />
-    </View>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <Profile user={currentUser} posts={posts} onSelect={handleSelect} />
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
+  container: { flex: 1, backgroundColor: '#fff' },
 })

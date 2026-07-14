@@ -4,6 +4,21 @@ import { catUsernames, captions } from '../data/user'
 
 const API_KEY = process.env.EXPO_PUBLIC_CAT_API_KEY ?? ''
 
+const locations = [
+  'Buenos Aires, Argentina',
+  'Palermo, CABA',
+  'Montevideo, Uruguay',
+  'Santiago, Chile',
+  'Ciudad de México, México',
+  'Bogotá, Colombia',
+  'Lima, Perú',
+  'Rosario, Argentina',
+  'Córdoba, Argentina',
+  'Mar del Plata, Argentina',
+  'Mendoza, Argentina',
+  'Bariloche, Argentina',
+]
+
 export async function fetchCatPosts(): Promise<Post[]> {
   const res = await axios.get('https://api.thecatapi.com/v1/images/search', {
     params: { limit: 12, has_breeds: 0 },
@@ -18,12 +33,13 @@ export async function fetchCatPosts(): Promise<Post[]> {
     likes: Math.floor(Math.random() * 9000) + 500,
     caption: captions[i % captions.length],
     username: catUsernames[i % catUsernames.length],
-    avatar: `https://api.dicebear.com/7.x/adventurer/svg?seed=${catUsernames[i]}`,
+    avatar: `https://api.dicebear.com/7.x/adventurer/png?seed=${catUsernames[i]}`,
     timestamp: `hace ${Math.floor(Math.random() * 23) + 1}h`,
+    location: locations[i % locations.length],
     comments: [
       { id: 1, username: '@micho', text: '¡Qué hermoso! 😍' },
-      { id: 2, username: '@luna',  text: 'Me encanta esta foto 🐾' },
-      { id: 3, username: '@neko',  text: 'Iconic 👑' },
+      { id: 2, username: '@luna', text: 'Me encanta esta foto 🐾' },
+      { id: 3, username: '@neko', text: 'Iconic 👑' },
     ],
   }))
 }

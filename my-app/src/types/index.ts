@@ -9,6 +9,7 @@ export interface Post {
   avatar: string
   comments: Comment[]
   timestamp: string
+  location: string
 }
 
 export interface Comment {
