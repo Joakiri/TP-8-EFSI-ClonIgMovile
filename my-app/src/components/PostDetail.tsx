@@ -1,8 +1,9 @@
-import { useState } from 'react'
 import {
   View, Text, Image, ScrollView, TextInput,
   TouchableOpacity, StyleSheet, Dimensions, KeyboardAvoidingView, Platform
 } from 'react-native'
+import { useState } from 'react'
+import { usePosts } from '../context/PostsContext'
 import type { Post } from '../types'
 
 interface Props {
@@ -10,15 +11,12 @@ interface Props {
 }
 
 const PostDetail = ({ post }: Props) => {
-  const [liked, setLiked] = useState(false)
-  const [likeCount, setLikeCount] = useState(post.likes)
+  const { likedIds, toggleLike } = usePosts()
+  const liked = likedIds.has(post.id)
+  const likeCount = liked ? post.likes + 1 : post.likes
+
   const [newComment, setNewComment] = useState('')
   const [comments, setComments] = useState(post.comments)
-
-  const handleLike = () => {
-    setLiked(!liked)
-    setLikeCount(liked ? likeCount - 1 : likeCount + 1)
-  }
 
   const handleComment = () => {
     if (!newComment.trim()) return
@@ -35,7 +33,6 @@ const PostDetail = ({ post }: Props) => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Imagen */}
         <Image source={{ uri: post.url }} style={styles.image} resizeMode="cover" />
 
         <View style={styles.body}>
@@ -51,12 +48,11 @@ const PostDetail = ({ post }: Props) => {
             </View>
           </View>
 
-          {/* Caption */}
           <Text style={styles.caption}>{post.caption}</Text>
 
           {/* Acciones */}
           <View style={styles.actions}>
-            <TouchableOpacity onPress={handleLike} style={styles.actionBtn}>
+            <TouchableOpacity onPress={() => toggleLike(post.id)} style={styles.actionBtn}>
               <Text style={styles.actionText}>
                 {liked ? '❤️' : '🤍'} {likeCount.toLocaleString()} likes
               </Text>
