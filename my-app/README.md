@@ -166,3 +166,27 @@ Escanear el QR con Expo Go para ver la app en el dispositivo.
 > Adjuntar capturas de pantalla o link a Figma utilizado como referencia de diseño.
 
    https://www.figma.com/community/file/1004033523744290376/instagram-modern-web-design
+
+---
+
+## Context y estado compartido
+
+Este proyecto implementa React Context para compartir información entre pantallas y componentes sin prop drilling.
+
+- Archivo del Context: `src/context/PostsContext.tsx`
+- Información que se comparte:
+  - `posts`: lista de publicaciones cargadas desde la API
+  - `loading`: estado de carga inicial
+  - `likedIds`: IDs de los posts marcados como favoritos
+  - `toggleLike`: función para alternar el estado de like de una publicación
+- Contenedor del Provider: `app/_layout.tsx`
+- Componentes que consumen el valor con `useContext`:
+  - `app/(tabs)/index.tsx`
+  - `app/(tabs)/profile.tsx`
+  - `app/post/[id].tsx`
+  - `src/components/PostCard.tsx`
+  - `src/components/PostDetail.tsx`
+
+La decisión de usar Context es apropiada porque el estado de publicaciones y likes debe estar disponible en varios niveles de la UI sin duplicar props ni mantener estados separados en cada pantalla.
+
+---
